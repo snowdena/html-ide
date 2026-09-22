@@ -7,20 +7,19 @@
   <!-- CodeMirror 5 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 
   <style>
     html, body {
-	  height: 100%;
-	  margin: 0;
-	}
+      height: 100%;
+      margin: 0;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -28,6 +27,7 @@
       flex-direction: column;
       height: 100vh;
     }
+
     header {
       background: #1f2933;
       color: #f9fafb;
@@ -37,17 +37,18 @@
       justify-content: space-between;
       align-items: center;
     }
+
     main {
       display: flex;
       flex: 1;
       min-height: 0;
     }
-	/* left and right panes scroll independently */
-	.left,
-	.right {
-	  min-height: 0;
-	  overflow-y: auto;        /* independent vertical scrolling */
-	}
+
+    .left,
+    .right {
+      min-height: 0;
+      overflow-y: auto;
+    }
 
     .left {
       flex: none;
@@ -56,41 +57,46 @@
       flex-direction: column;
       border-right: 1px solid #d0d7de;
       min-width: 0;
-	  min-height: 0;
-
+      min-height: 0;
     }
+
     .right {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-width: 0;
     }
+
     #dragbar {
       width: 6px;
       background: #d0d7de;
       cursor: col-resize;
     }
+
     #dragbar:hover {
       background: #9ca3af;
     }
+
     .pane-header {
-	  position: sticky;
-	  top: 0;
-	  z-index: 20;
-	  background: #f3f4f6;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #f3f4f6;
       border-bottom: 1px solid #d0d7de;
       padding: 0.4rem 0.75rem;
       font-weight: 600;
       font-size: 0.85rem;
     }
+
     .tabs {
-	  position: sticky;
-	  top: 32px;
-	  z-index: 20;
+      position: sticky;
+      top: 32px;
+      z-index: 20;
       display: flex;
       border-bottom: 1px solid #d0d7de;
       background: #f9fafb;
     }
+
     .tabs button {
       flex: 1;
       padding: 0.4rem 0.75rem;
@@ -100,50 +106,55 @@
       font-size: 0.85rem;
       cursor: pointer;
     }
+
     .tabs button:last-child {
       border-right: none;
     }
+
     .tabs button.active {
       background: #2563eb;
       color: #fff;
     }
+
     .editor-pane {
       flex: 1;
       width: 100%;
       height: 100%;
       display: none;
       min-height: 0;
-	  overflow-y: auto;
+      overflow-y: auto;
     }
+
     .editor-pane.active {
       display: block;
     }
+
     .CodeMirror {
       height: 100%;
       font-size: 0.9rem;
     }
+
     iframe {
       flex: 1;
       border: none;
       background: white;
     }
-	.toolbar {
-	  position: fixed;
-	  bottom: 0;
-	  left: 0;
-	  right: 0;
 
-	  height: 48px;
-	  background: #f9fafb;
-	  border-top: 1px solid #d0d7de;
+    .toolbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: #f9fafb;
+      border-top: 1px solid #d0d7de;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 0.75rem;
+      z-index: 9999;
+    }
 
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: center;
-	  padding: 0 0.75rem;
-
-	  z-index: 9999;
-	}
     .toolbar-left,
     .toolbar-right {
       display: flex;
@@ -151,6 +162,7 @@
       align-items: center;
       flex-wrap: wrap;
     }
+
     button.action {
       padding: 0.35rem 0.75rem;
       font-size: 0.85rem;
@@ -159,35 +171,38 @@
       background: #e5e7eb;
       cursor: pointer;
     }
+
     button.action.primary {
       background: #2563eb;
       border-color: #1d4ed8;
       color: white;
     }
+
     #themeToggle {
       margin-left: 0.5rem;
       min-width: 2.5rem;
       text-align: center;
     }
+
     @media (max-width: 800px) {
       main {
         flex-direction: column;
       }
+
       .left {
         border-right: none;
         border-bottom: 1px solid #d0d7de;
         width: 100%;
       }
+
       #dragbar {
         display: none;
       }
     }
+
     textarea.editor-textarea {
       display: none;
     }
-
-
-
   </style>
 </head>
 <body>
@@ -199,9 +214,7 @@
   <main>
     <section class="left">
       <div class="pane-header">Editors</div>
-
       <div class="tabs"></div>
-
       <div id="editorPanes"></div>
 
       <div class="toolbar">
@@ -217,8 +230,7 @@
           <button id="toggleLivePreview" class="action">Live preview: OFF</button>
           <span>All pages + CSS stored in <code>?site=</code>.</span>
         </div>
-        <div class="toolbar-right">
-        </div>
+        <div class="toolbar-right"></div>
       </div>
     </section>
 
@@ -233,40 +245,34 @@
   <script>
     const DEFAULT_CSS = `
 /* Shared site-wide styles */
-
 body {
   font-family: system-ui, sans-serif;
   margin: 0;
   padding: 1rem;
 }
-
 .top-heading {
   background: #cce7ff;
   padding: 1.5rem;
   text-align: center;
 }
-
 .top-heading h1 {
   margin: 0;
   font-size: 2.5rem;
   color: #003366;
   font-weight: 700;
 }
-
 .site-nav {
   display: flex;
   justify-content: space-around;
   background: #cce7ff;
   padding: 0.75rem;
 }
-
 .site-nav a {
   color: #003366;
   text-decoration: none;
   font-weight: 600;
   cursor: pointer;
 }
-
 .site-nav a:hover {
   text-decoration: underline;
 }
@@ -283,9 +289,7 @@ body {
   <div class="top-heading">
     <h1>My Big Page Heading</h1>
   </div>
-
   <div id="navbar-slot"></div>
-
   <h2>Home</h2>
   <p>Welcome to my basic multi‑page website.</p>
 </body>
@@ -300,9 +304,7 @@ body {
   <div class="top-heading">
     <h1>About This Site</h1>
   </div>
-
   <div id="navbar-slot"></div>
-
   <h2>About</h2>
   <p>Write about yourself or your project here.</p>
 </body>
@@ -317,9 +319,7 @@ body {
   <div class="top-heading">
     <h1>What I Offer</h1>
   </div>
-
   <div id="navbar-slot"></div>
-
   <h2>Services</h2>
   <p>Describe what you offer.</p>
 </body>
@@ -334,9 +334,7 @@ body {
   <div class="top-heading">
     <h1>Gallery</h1>
   </div>
-
   <div id="navbar-slot"></div>
-
   <h2>Gallery</h2>
   <p>Add images or descriptions.</p>
 </body>
@@ -351,9 +349,7 @@ body {
   <div class="top-heading">
     <h1>Get in Touch</h1>
   </div>
-
   <div id="navbar-slot"></div>
-
   <h2>Contact</h2>
   <p>Provide contact details or a simple form.</p>
 </body>
@@ -376,7 +372,6 @@ body {
     let currentPreviewPage = 'page1';
     let livePreviewEnabled = false;
     let previewDebounceTimer = null;
-
     const preview = document.getElementById('preview');
 
     function copyToClipboard(text) {
@@ -388,25 +383,19 @@ body {
       document.body.removeChild(temp);
     }
 
-	function performShareCore() {
-	  const pages = getPagesFromEditors();
-	  const cssDoc = cmEditors.css ? cmEditors.css.getValue() : siteData.css;
-	  const navbarDoc = cmEditors.navbar ? cmEditors.navbar.getValue() : siteData.navbar;
-
-	  const payload = { pages, css: cssDoc, navbar: navbarDoc };
-	  const json = JSON.stringify(payload);
-
-	  // ⭐ Compress JSON → URI‑safe string
-	  const compressed = LZString.compressToEncodedURIComponent(json);
-
-	  const url = new URL(window.location.href);
-	  url.searchParams.set("site", compressed);
-	  const finalURL = url.toString();
-
-	  history.replaceState(null, "", finalURL);
-	  copyToClipboard(finalURL);
-	}
-
+    function performShareCore() {
+      const pages = getPagesFromEditors();
+      const cssDoc = cmEditors.css ? cmEditors.css.getValue() : siteData.css;
+      const navbarDoc = cmEditors.navbar ? cmEditors.navbar.getValue() : siteData.navbar;
+      const payload = { pages, css: cssDoc, navbar: navbarDoc };
+      const json = JSON.stringify(payload);
+      const compressed = LZString.compressToEncodedURIComponent(json);
+      const url = new URL(window.location.href);
+      url.searchParams.set("site", compressed);
+      const finalURL = url.toString();
+      history.replaceState(null, "", finalURL);
+      copyToClipboard(finalURL);
+    }
 
     function debouncedPreviewUpdate() {
       clearTimeout(previewDebounceTimer);
@@ -427,13 +416,17 @@ body {
         theme: darkMode ? 'material-darker' : 'default',
         tabSize: 2,
         indentUnit: 2,
-		lineWrapping: true
+        lineWrapping: true
       });
 
       if (page === 'css') {
         cmEditors.css.setValue(siteData.css);
       } else if (page === 'navbar') {
         cmEditors.navbar.setValue(siteData.navbar);
+        cmEditors.navbar.on("change", () => {
+          siteData.navbar = cmEditors.navbar.getValue();
+          updateTabLabelsFromNavbar();
+        });
       } else {
         cmEditors[page].setValue(siteData.pages[page]);
       }
@@ -460,11 +453,9 @@ body {
     function updatePreview(pageId) {
       const pages = getPagesFromEditors();
       let htmlDoc = pages[pageId];
-
       const cssText = cmEditors.css ? cmEditors.css.getValue() : siteData.css;
       const styleTag = `<style>${cssText}</style>`;
       htmlDoc = htmlDoc.replace('</head>', styleTag + '</head>');
-
       const navbarHtml = cmEditors.navbar ? cmEditors.navbar.getValue() : siteData.navbar;
 
       if (htmlDoc.includes('<div id="navbar-slot"></div>')) {
@@ -483,27 +474,53 @@ body {
 
     window.loadPreviewPage = loadPreviewPage;
 
-	function rebuildPageTabs() {
-		const tabs = document.querySelector('.tabs');
-		const panesContainer = document.getElementById('editorPanes');
+    function getNavbarLabels(navbarHtml) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(navbarHtml, "text/html");
+      const labels = {};
+      doc.querySelectorAll("a").forEach(a => {
+        const onclick = a.getAttribute("onclick");
+        const match = onclick && onclick.match(/loadPreviewPage\('([^']+)'\)/);
+        if (match) {
+          const pageId = match[1];
+          labels[pageId] = a.textContent.trim();
+        }
+      });
+      return labels;
+    }
 
-		// Clear existing CodeMirror instances
-		Object.keys(cmEditors).forEach(key => {
-			// Optional: detach if you want, but not strictly necessary
-			// cmEditors[key].toTextArea();
-			delete cmEditors[key];
-		});
+    function updateTabLabelsFromNavbar() {
+      const labels = getNavbarLabels(siteData.navbar);
+      document.querySelectorAll('.tabs button').forEach(btn => {
+        const pageId = btn.dataset.page;
+        if (pageId === 'css') {
+          btn.textContent = 'CSS';
+        } else if (pageId === 'navbar') {
+          btn.textContent = 'Navbar';
+        } else {
+          btn.textContent = labels[pageId] || pageId;
+        }
+      });
+    }
 
-		// Clear existing UI
-		tabs.innerHTML = '';
-		panesContainer.innerHTML = '';
+    function rebuildPageTabs() {
+      const tabs = document.querySelector('.tabs');
+      const panesContainer = document.getElementById('editorPanes');
 
-	    const pageIds = Object.keys(siteData.pages);
+      Object.keys(cmEditors).forEach(key => {
+        delete cmEditors[key];
+      });
 
-        pageIds.forEach((pageId, index) => {
+      tabs.innerHTML = '';
+      panesContainer.innerHTML = '';
+
+      const pageIds = Object.keys(siteData.pages);
+      const labels = getNavbarLabels(siteData.navbar);
+
+      pageIds.forEach((pageId, index) => {
         const btn = document.createElement('button');
         btn.dataset.page = pageId;
-        btn.textContent = pageId;
+        btn.textContent = labels[pageId] || pageId;
         if (index === 0) btn.classList.add('active');
         tabs.appendChild(btn);
 
@@ -551,16 +568,12 @@ body {
       document.querySelectorAll('.tabs button').forEach(btn => {
         btn.addEventListener('click', () => {
           const page = btn.dataset.page;
-
           document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-
           document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
           document.getElementById('pane-' + page).classList.add('active');
-
           createEditorIfNeeded(page);
           cmEditors[page].refresh();
-
           if (page !== 'css' && page !== 'navbar') {
             currentPreviewPage = page;
           }
@@ -568,53 +581,46 @@ body {
       });
     }
 
-	function loadFromQuery() {
-	  const url = new URL(window.location.href);
-	  const siteParam = url.searchParams.get('site');
+    function loadFromQuery() {
+      const url = new URL(window.location.href);
+      const siteParam = url.searchParams.get('site');
 
-	  if (siteParam) {
-		try {
-		  // ⭐ Decompress
-		  const decompressed = LZString.decompressFromEncodedURIComponent(siteParam);
+      if (siteParam) {
+        try {
+          const decompressed = LZString.decompressFromEncodedURIComponent(siteParam);
+          const json = decompressed || decodeURIComponent(siteParam);
+          const payload = JSON.parse(json);
+          siteData = {
+            pages: payload.pages || DEFAULT_PAGES,
+            css: payload.css || DEFAULT_CSS,
+            navbar: payload.navbar || DEFAULT_NAVBAR
+          };
+        } catch (e) {
+          console.error("Failed to load compressed site data:", e);
+          siteData = {
+            pages: DEFAULT_PAGES,
+            css: DEFAULT_CSS,
+            navbar: DEFAULT_NAVBAR
+          };
+        }
+      } else {
+        siteData = {
+          pages: DEFAULT_PAGES,
+          css: DEFAULT_CSS,
+          navbar: DEFAULT_NAVBAR
+        };
+      }
 
-		  // If decompressed is null, fallback to raw JSON (backwards compatibility)
-		  const json = decompressed || decodeURIComponent(siteParam);
-
-		  const payload = JSON.parse(json);
-
-		  siteData = {
-			pages: payload.pages || DEFAULT_PAGES,
-			css: payload.css || DEFAULT_CSS,
-			navbar: payload.navbar || DEFAULT_NAVBAR
-		  };
-		} catch (e) {
-		  console.error("Failed to load compressed site data:", e);
-		  siteData = {
-			pages: DEFAULT_PAGES,
-			css: DEFAULT_CSS,
-			navbar: DEFAULT_NAVBAR
-		  };
-		}
-	  } else {
-		siteData = {
-		  pages: DEFAULT_PAGES,
-		  css: DEFAULT_CSS,
-		  navbar: DEFAULT_NAVBAR
-		};
-	  }
-
-	  rebuildPageTabs();
-	  createEditorIfNeeded('page1');
-	  createEditorIfNeeded('css');
-	  createEditorIfNeeded('navbar');
-
-	  cmEditors.page1.refresh();
-	  cmEditors.css.refresh();
-	  cmEditors.navbar.refresh();
-
-	  updatePreview('page1');
-	}
-
+      rebuildPageTabs();
+      createEditorIfNeeded('page1');
+      createEditorIfNeeded('css');
+      createEditorIfNeeded('navbar');
+      cmEditors.page1.refresh();
+      cmEditors.css.refresh();
+      cmEditors.navbar.refresh();
+      updatePreview('page1');
+      updateTabLabelsFromNavbar();
+    }
 
     const themeToggleBtn = document.getElementById('themeToggle');
 
@@ -622,7 +628,6 @@ body {
       darkMode = !darkMode;
       const themeName = darkMode ? 'material-darker' : 'default';
       themeToggleBtn.textContent = darkMode ? '🌙' : '🌞';
-
       Object.values(cmEditors).forEach(ed => ed.setOption('theme', themeName));
     }
 
@@ -639,7 +644,6 @@ body {
       livePreviewEnabled = !livePreviewEnabled;
       document.getElementById('toggleLivePreview').textContent =
         livePreviewEnabled ? "Live preview: ON" : "Live preview: OFF";
-
       if (livePreviewEnabled) {
         debouncedPreviewUpdate();
       }
@@ -657,18 +661,17 @@ body {
 
     document.getElementById('resetPageBtn').addEventListener('click', () => {
       const page = currentPreviewPage;
-
       if (page === 'css') {
         siteData.css = DEFAULT_CSS;
         if (cmEditors.css) cmEditors.css.setValue(DEFAULT_CSS);
       } else if (page === 'navbar') {
         siteData.navbar = DEFAULT_NAVBAR;
         if (cmEditors.navbar) cmEditors.navbar.setValue(DEFAULT_NAVBAR);
+        updateTabLabelsFromNavbar();
       } else {
         siteData.pages[page] = DEFAULT_PAGES[page] || '';
         if (cmEditors[page]) cmEditors[page].setValue(siteData.pages[page]);
       }
-
       updatePreview(page);
     });
 
@@ -695,14 +698,12 @@ body {
       createEditorIfNeeded('page1');
       createEditorIfNeeded('css');
       createEditorIfNeeded('navbar');
-
       cmEditors.page1.refresh();
       cmEditors.css.refresh();
       cmEditors.navbar.refresh();
-
       currentPreviewPage = 'page1';
       updatePreview('page1');
-
+      updateTabLabelsFromNavbar();
       alert("All pages, CSS, and navbar reset; URL cleared.");
     });
 
@@ -723,32 +724,27 @@ body {
   <div class="top-heading">
     <h1>${newPageId}</h1>
   </div>
-
   <div id="navbar-slot"></div>
-
   <h2>${newPageId}</h2>
   <p>New page created.</p>
 </body>
 </html>`;
 
-		rebuildPageTabs();
+      rebuildPageTabs();
 
-		// ⭐ Make the new page tab active
-		document.querySelectorAll('.tabs button').forEach(btn => {
-			btn.classList.toggle('active', btn.dataset.page === newPageId);
-		});
+      document.querySelectorAll('.tabs button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === newPageId);
+      });
 
-		// ⭐ Make the new page editor pane active
-		document.querySelectorAll('.editor-pane').forEach(pane => {
-			pane.classList.toggle('active', pane.id === 'pane-' + newPageId);
-		});
+      document.querySelectorAll('.editor-pane').forEach(pane => {
+        pane.classList.toggle('active', pane.id === 'pane-' + newPageId);
+      });
 
-		// ⭐ Now create the editor for the newly active pane
-		createEditorIfNeeded(newPageId);
-		cmEditors[newPageId].refresh();
-
-		currentPreviewPage = newPageId;
-		updatePreview(newPageId);
+      createEditorIfNeeded(newPageId);
+      cmEditors[newPageId].refresh();
+      currentPreviewPage = newPageId;
+      updatePreview(newPageId);
+      updateTabLabelsFromNavbar();
     });
 
     document.getElementById('removePageBtn').addEventListener('click', () => {
@@ -770,6 +766,7 @@ body {
       createEditorIfNeeded(newPage);
       cmEditors[newPage].refresh();
       updatePreview(newPage);
+      updateTabLabelsFromNavbar();
     });
 
     themeToggleBtn.addEventListener('click', toggleTheme);

@@ -203,12 +203,34 @@
     textarea.editor-textarea {
       display: none;
     }
+
+	:root {
+	  --editor-font-size: 0.9rem;
+	}
+	.CodeMirror {
+	  font-size: var(--editor-font-size);
+	}
+
+
   </style>
 </head>
 <body>
   <header>
-    <span>Dynamic Multi-Page Website IDE</span>
-    <span>Theme: <button id="themeToggle" class="action">🌞</button></span>
+    <span>HTML-IDE >>> 
+	  <button id="undoBtn" class="action">Undo</button>
+	  <button id="redoBtn" class="action">Redo</button>
+	  <button id="addPageBtn" class="action">Add page</button>
+	  <button id="removePageBtn" class="action">Remove page</button>
+	  <button id="resetPageBtn" class="action">Reset page</button>
+	  <button id="resetAllBtn" class="action">Reset ALL pages</button>
+	  <button id="toggleLivePreview" class="action">Live preview: OFF</button>
+	  <button id="updatePreviewBtn" class="action">Update preview</button>
+	  <button id="shareBtn" class="action primary">Update URL & copy</button>
+
+	  <button id="fontUpBtn" class="action">A+</button>
+	  <button id="fontDownBtn" class="action">A−</button>
+	  <button id="themeToggle" class="action">🌞</button>
+	</span>
   </header>
 
   <main>
@@ -216,22 +238,6 @@
       <div class="pane-header">Editors</div>
       <div class="tabs"></div>
       <div id="editorPanes"></div>
-
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <button id="updatePreviewBtn" class="action primary">Update preview</button>
-          <button id="shareBtn" class="action">Update URL & copy</button>
-          <button id="undoBtn" class="action">Undo</button>
-          <button id="redoBtn" class="action">Redo</button>
-          <button id="resetPageBtn" class="action">Reset page</button>
-          <button id="resetAllBtn" class="action">Reset ALL pages</button>
-          <button id="addPageBtn" class="action">Add page</button>
-          <button id="removePageBtn" class="action">Remove page</button>
-          <button id="toggleLivePreview" class="action">Live preview: OFF</button>
-          <span>All pages + CSS stored in <code>?site=</code>.</span>
-        </div>
-        <div class="toolbar-right"></div>
-      </div>
     </section>
 
     <div id="dragbar"></div>
@@ -812,6 +818,24 @@ body {
         dragbar.releasePointerCapture(e.pointerId);
       } catch {}
     });
+
+let editorFontSize = 0.9; // rem
+
+function applyEditorFontSize() {
+  document.documentElement.style.setProperty('--editor-font-size', editorFontSize + 'rem');
+  Object.values(cmEditors).forEach(ed => ed.refresh());
+}
+
+document.getElementById('fontUpBtn').addEventListener('click', () => {
+  editorFontSize = Math.min(editorFontSize + 0.1, 2.0);
+  applyEditorFontSize();
+});
+
+document.getElementById('fontDownBtn').addEventListener('click', () => {
+  editorFontSize = Math.max(editorFontSize - 0.1, 0.5);
+  applyEditorFontSize();
+});
+
 
     loadFromQuery();
   </script>

@@ -507,53 +507,68 @@ body {
       const tabs = document.querySelector('.tabs');
       const panesContainer = document.getElementById('editorPanes');
 
-      Object.keys(cmEditors).forEach(key => {
-        delete cmEditors[key];
-      });
-
       tabs.innerHTML = '';
-      panesContainer.innerHTML = '';
 
       const pageIds = Object.keys(siteData.pages);
       const labels = getNavbarLabels(siteData.navbar);
 
-      pageIds.forEach((pageId, index) => {
+      pageIds.forEach(pageId => {
         const btn = document.createElement('button');
         btn.dataset.page = pageId;
         btn.textContent = labels[pageId] || pageId;
-        if (index === 0) btn.classList.add('active');
+        if (pageId === currentPreviewPage) btn.classList.add('active');
         tabs.appendChild(btn);
 
-        const pane = document.createElement('div');
-        pane.id = 'pane-' + pageId;
-        pane.classList.add('editor-pane');
-        if (index === 0) pane.classList.add('active');
+        let pane = document.getElementById('pane-' + pageId);
+        if (!pane) {
+          pane = document.createElement('div');
+          pane.id = 'pane-' + pageId;
+          pane.classList.add('editor-pane');
 
-        const ta = document.createElement('textarea');
-        ta.id = 'ta-' + pageId;
-        ta.className = 'editor-textarea';
-        pane.appendChild(ta);
+          const ta = document.createElement('textarea');
+          ta.id = 'ta-' + pageId;
+          ta.className = 'editor-textarea';
+          pane.appendChild(ta);
 
-        panesContainer.appendChild(pane);
+          panesContainer.appendChild(pane);
+        }
+        pane.classList.toggle('active', pageId === currentPreviewPage);
+
+        btn.addEventListener('click', () => {
+          currentPreviewPage = pageId;
+          document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
+          pane.classList.add('active');
+          createEditorIfNeeded(pageId);
+          cmEditors[pageId].refresh();
+          updatePreview(pageId);
+        });
       });
 
-      const cssPane = document.createElement('div');
-      cssPane.id = 'pane-css';
-      cssPane.classList.add('editor-pane');
-      const cssTa = document.createElement('textarea');
-      cssTa.id = 'ta-css';
-      cssTa.className = 'editor-textarea';
-      cssPane.appendChild(cssTa);
-      panesContainer.appendChild(cssPane);
+      let cssPane = document.getElementById('pane-css');
+      if (!cssPane) {
+        cssPane = document.createElement('div');
+        cssPane.id = 'pane-css';
+        cssPane.classList.add('editor-pane');
+        const cssTa = document.createElement('textarea');
+        cssTa.id = 'ta-css';
+        cssTa.className = 'editor-textarea';
+        cssPane.appendChild(cssTa);
+        panesContainer.appendChild(cssPane);
+      }
 
-      const navbarPane = document.createElement('div');
-      navbarPane.id = 'pane-navbar';
-      navbarPane.classList.add('editor-pane');
-      const navbarTa = document.createElement('textarea');
-      navbarTa.id = 'ta-navbar';
-      navbarTa.className = 'editor-textarea';
-      navbarPane.appendChild(navbarTa);
-      panesContainer.appendChild(navbarPane);
+      let navbarPane = document.getElementById('pane-navbar');
+      if (!navbarPane) {
+        navbarPane = document.createElement('div');
+        navbarPane.id = 'pane-navbar';
+        navbarPane.classList.add('editor-pane');
+        const navbarTa = document.createElement('textarea');
+        navbarTa.id = 'ta-navbar';
+        navbarTa.className = 'editor-textarea';
+        navbarPane.appendChild(navbarTa);
+        panesContainer.appendChild(navbarPane);
+      }
 
       const cssTab = document.createElement('button');
       cssTab.dataset.page = 'css';
@@ -565,20 +580,25 @@ body {
       navbarTab.textContent = 'Navbar';
       tabs.appendChild(navbarTab);
 
-      document.querySelectorAll('.tabs button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const page = btn.dataset.page;
-          document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
-          document.getElementById('pane-' + page).classList.add('active');
-          createEditorIfNeeded(page);
-          cmEditors[page].refresh();
-          if (page !== 'css' && page !== 'navbar') {
-            currentPreviewPage = page;
-          }
-        });
+      cssTab.addEventListener('click', () => {
+        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+        cssTab.classList.add('active');
+        document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
+        cssPane.classList.add('active');
+        createEditorIfNeeded('css');
+        cmEditors.css.refresh();
       });
+
+      navbarTab.addEventListener('click', () => {
+        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+        navbarTab.classList.add('active');
+        document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
+        navbarPane.classList.add('active');
+        createEditorIfNeeded('navbar');
+        cmEditors.navbar.refresh();
+      });
+
+      updateTabLabelsFromNavbar();
     }
 
     function loadFromQuery() {
@@ -611,15 +631,18 @@ body {
         };
       }
 
+      currentPreviewPage = 'page1';
       rebuildPageTabs();
+
       createEditorIfNeeded('page1');
       createEditorIfNeeded('css');
       createEditorIfNeeded('navbar');
+
       cmEditors.page1.refresh();
       cmEditors.css.refresh();
       cmEditors.navbar.refresh();
+
       updatePreview('page1');
-      updateTabLabelsFromNavbar();
     }
 
     const themeToggleBtn = document.getElementById('themeToggle');
@@ -694,16 +717,18 @@ body {
       url.searchParams.delete("site");
       history.replaceState(null, "", url.toString());
 
+      currentPreviewPage = 'page1';
       rebuildPageTabs();
+
       createEditorIfNeeded('page1');
       createEditorIfNeeded('css');
       createEditorIfNeeded('navbar');
+
       cmEditors.page1.refresh();
       cmEditors.css.refresh();
       cmEditors.navbar.refresh();
-      currentPreviewPage = 'page1';
+
       updatePreview('page1');
-      updateTabLabelsFromNavbar();
       alert("All pages, CSS, and navbar reset; URL cleared.");
     });
 
@@ -730,21 +755,12 @@ body {
 </body>
 </html>`;
 
+      currentPreviewPage = newPageId;
       rebuildPageTabs();
-
-      document.querySelectorAll('.tabs button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.page === newPageId);
-      });
-
-      document.querySelectorAll('.editor-pane').forEach(pane => {
-        pane.classList.toggle('active', pane.id === 'pane-' + newPageId);
-      });
 
       createEditorIfNeeded(newPageId);
       cmEditors[newPageId].refresh();
-      currentPreviewPage = newPageId;
       updatePreview(newPageId);
-      updateTabLabelsFromNavbar();
     });
 
     document.getElementById('removePageBtn').addEventListener('click', () => {
@@ -759,14 +775,13 @@ body {
       delete siteData.pages[page];
       if (cmEditors[page]) delete cmEditors[page];
 
-      const newPage = pages.find(p => p !== page) || pages[0];
-      currentPreviewPage = newPage;
+      const remaining = Object.keys(siteData.pages);
+      currentPreviewPage = remaining[0];
 
       rebuildPageTabs();
-      createEditorIfNeeded(newPage);
-      cmEditors[newPage].refresh();
-      updatePreview(newPage);
-      updateTabLabelsFromNavbar();
+      createEditorIfNeeded(currentPreviewPage);
+      cmEditors[currentPreviewPage].refresh();
+      updatePreview(currentPreviewPage);
     });
 
     themeToggleBtn.addEventListener('click', toggleTheme);

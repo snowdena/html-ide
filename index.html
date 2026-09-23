@@ -211,6 +211,56 @@
 	  font-size: var(--editor-font-size);
 	}
 
+.dark-mode {
+background: #1e1e1e;
+color: #f3f4f6;
+}
+ 
+.dark-mode .left,
+.dark-mode .right {
+background: #252526;
+}
+ 
+.dark-mode .pane-header {
+background: #2d2d30;
+color: white;
+border-color: #444;
+}
+ 
+.dark-mode .tabs {
+background: #2d2d30;
+border-color: #444;
+}
+ 
+.dark-mode .tabs button {
+background: #3c3c3c;
+color: white;
+border-color: #444;
+}
+ 
+.dark-mode .tabs button.active {
+background: #0e639c;
+color: white;
+}
+ 
+.dark-mode .toolbar {
+background: #2d2d30;
+border-color: #444;
+}
+ 
+.dark-mode .action {
+background: #3c3c3c;
+color: white;
+border-color: #555;
+}
+ 
+.dark-mode header {
+background: #1b1b1b;
+}
+ 
+.dark-mode #dragbar {
+background: #444;
+}
 
   </style>
 </head>
@@ -655,6 +705,7 @@ body {
 
     function toggleTheme() {
       darkMode = !darkMode;
+	  document.body.classList.toggle("dark-mode", darkMode);
       const themeName = darkMode ? 'material-darker' : 'default';
       themeToggleBtn.textContent = darkMode ? '🌙' : '🌞';
       Object.values(cmEditors).forEach(ed => ed.setOption('theme', themeName));

@@ -211,11 +211,11 @@
 	  font-size: var(--editor-font-size);
 	}
 
-.dark-mode {
-background: #1e1e1e;
-}
+	.dark-mode {
+	background: #1e1e1e;
+	}
 
-
+ 
 
   </style>
 </head>
@@ -254,6 +254,13 @@ background: #1e1e1e;
   </main>
 
   <script>
+  
+const DEFAULT_SCRIPT = `
+// Shared JavaScript
+ 
+console.log("Script loaded");
+ 
+`;
     const DEFAULT_CSS = `
 /* Shared site-wide styles */
 body {
@@ -398,7 +405,8 @@ body {
       const pages = getPagesFromEditors();
       const cssDoc = cmEditors.css ? cmEditors.css.getValue() : siteData.css;
       const navbarDoc = cmEditors.navbar ? cmEditors.navbar.getValue() : siteData.navbar;
-      const payload = { pages, css: cssDoc, navbar: navbarDoc };
+const scriptDoc = cmEditors.script ? cmEditors.script.getValue() : siteData.script;
+const payload = { pages, css: cssDoc, navbar: navbarDoc, script: scriptDoc };
       const json = JSON.stringify(payload);
       const compressed = LZString.compressToEncodedURIComponent(json);
       const url = new URL(window.location.href);
@@ -419,7 +427,9 @@ body {
       if (cmEditors[page]) return;
 
       const textarea = document.getElementById('ta-' + page);
-      const mode = page === 'css' ? 'css' : 'htmlmixed';
+      // const mode = page === 'css' ? 'css' : 'htmlmixed';
+const mode = page === 'css' ? 'css' : page === 'script' ? 'javascript' : 'htmlmixed';
+
 
       cmEditors[page] = CodeMirror.fromTextArea(textarea, {
         mode: mode,
@@ -438,6 +448,8 @@ body {
           siteData.navbar = cmEditors.navbar.getValue();
           updateTabLabelsFromNavbar();
         });
+	  } else if (page === 'script') {
+        cmEditors.script.setValue(siteData.script);
       } else {
         cmEditors[page].setValue(siteData.pages[page]);
       }
@@ -467,6 +479,11 @@ body {
       const cssText = cmEditors.css ? cmEditors.css.getValue() : siteData.css;
       const styleTag = `<style>${cssText}</style>`;
       htmlDoc = htmlDoc.replace('</head>', styleTag + '</head>');
+
+const scriptText = cmEditors.script ? cmEditors.script.getValue() : siteData.script;
+htmlDoc = htmlDoc.replace('</body>', `<script>${scriptText}<\/script></body>`);
+
+
       const navbarHtml = cmEditors.navbar ? cmEditors.navbar.getValue() : siteData.navbar;
 
       if (htmlDoc.includes('<div id="navbar-slot"></div>')) {
@@ -581,6 +598,20 @@ body {
         panesContainer.appendChild(navbarPane);
       }
 
+let scriptPane = document.getElementById('pane-script');
+if (!scriptPane) {
+    scriptPane = document.createElement('div');
+    scriptPane.id = 'pane-script';
+    scriptPane.classList.add('editor-pane');
+
+    const scriptTa = document.createElement('textarea');
+    scriptTa.id = 'ta-script';
+    scriptTa.className = 'editor-textarea';
+
+    scriptPane.appendChild(scriptTa);
+    panesContainer.appendChild(scriptPane);
+}
+
       const cssTab = document.createElement('button');
       cssTab.dataset.page = 'css';
       cssTab.textContent = 'CSS';
@@ -590,6 +621,11 @@ body {
       navbarTab.dataset.page = 'navbar';
       navbarTab.textContent = 'Navbar';
       tabs.appendChild(navbarTab);
+
+const scriptTab = document.createElement('button');
+scriptTab.dataset.page = 'script';
+scriptTab.textContent = 'Script';
+tabs.appendChild(scriptTab);
 
       cssTab.addEventListener('click', () => {
         document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
@@ -609,8 +645,19 @@ body {
         cmEditors.navbar.refresh();
       });
 
+scriptTab.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    scriptTab.classList.add('active');
+    document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
+    scriptPane.classList.add('active');
+    createEditorIfNeeded('script');
+    cmEditors.script.refresh();
+});
+
       updateTabLabelsFromNavbar();
     }
+
+
 
     function loadFromQuery() {
       const url = new URL(window.location.href);
@@ -624,21 +671,24 @@ body {
           siteData = {
             pages: payload.pages || DEFAULT_PAGES,
             css: payload.css || DEFAULT_CSS,
-            navbar: payload.navbar || DEFAULT_NAVBAR
+            navbar: payload.navbar || DEFAULT_NAVBAR,
+			script: payload.script || DEFAULT_SCRIPT
           };
         } catch (e) {
           console.error("Failed to load compressed site data:", e);
           siteData = {
             pages: DEFAULT_PAGES,
             css: DEFAULT_CSS,
-            navbar: DEFAULT_NAVBAR
+            navbar: DEFAULT_NAVBAR,
+			script: DEFAULT_SCRIPT
           };
         }
       } else {
         siteData = {
           pages: DEFAULT_PAGES,
           css: DEFAULT_CSS,
-          navbar: DEFAULT_NAVBAR
+          navbar: DEFAULT_NAVBAR,
+		  script: DEFAULT_SCRIPT
         };
       }
 
@@ -648,10 +698,12 @@ body {
       createEditorIfNeeded('page1');
       createEditorIfNeeded('css');
       createEditorIfNeeded('navbar');
+      createEditorIfNeeded('script');
 
       cmEditors.page1.refresh();
       cmEditors.css.refresh();
       cmEditors.navbar.refresh();
+      cmEditors.script.refresh();
 
       updatePreview('page1');
     }
@@ -714,12 +766,15 @@ body {
       siteData.pages = JSON.parse(JSON.stringify(DEFAULT_PAGES));
       siteData.css = DEFAULT_CSS;
       siteData.navbar = DEFAULT_NAVBAR;
+	  siteData.script = DEFAULT_SCRIPT;
 
       Object.keys(cmEditors).forEach(key => {
         if (key === 'css') {
           cmEditors.css.setValue(DEFAULT_CSS);
         } else if (key === 'navbar') {
           cmEditors.navbar.setValue(DEFAULT_NAVBAR);
+        } else if (key === 'script') {
+          cmEditors.script.setValue(DEFAULT_SCRIPT);
         } else if (DEFAULT_PAGES[key]) {
           cmEditors[key].setValue(DEFAULT_PAGES[key]);
         }
@@ -735,13 +790,15 @@ body {
       createEditorIfNeeded('page1');
       createEditorIfNeeded('css');
       createEditorIfNeeded('navbar');
+      createEditorIfNeeded('script');
 
-      cmEditors.page1.refresh();
       cmEditors.css.refresh();
       cmEditors.navbar.refresh();
+      cmEditors.script.refresh();
+      cmEditors.page1.refresh();
 
       updatePreview('page1');
-      alert("All pages, CSS, and navbar reset; URL cleared.");
+      alert("All pages, CSS, navbar and script reset; URL cleared.");
     });
 
     document.getElementById('addPageBtn').addEventListener('click', () => {

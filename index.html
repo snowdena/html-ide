@@ -612,20 +612,20 @@ if (!scriptPane) {
     panesContainer.appendChild(scriptPane);
 }
 
-      const cssTab = document.createElement('button');
-      cssTab.dataset.page = 'css';
-      cssTab.textContent = 'CSS';
-      tabs.appendChild(cssTab);
-
       const navbarTab = document.createElement('button');
       navbarTab.dataset.page = 'navbar';
       navbarTab.textContent = 'Navbar';
       tabs.appendChild(navbarTab);
 
-const scriptTab = document.createElement('button');
-scriptTab.dataset.page = 'script';
-scriptTab.textContent = 'Script';
-tabs.appendChild(scriptTab);
+      const cssTab = document.createElement('button');
+      cssTab.dataset.page = 'css';
+      cssTab.textContent = 'CSS';
+      tabs.appendChild(cssTab);
+
+		const scriptTab = document.createElement('button');
+		scriptTab.dataset.page = 'script';
+		scriptTab.textContent = 'Script';
+		tabs.appendChild(scriptTab);
 
       cssTab.addEventListener('click', () => {
         document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));

@@ -214,8 +214,55 @@
 	.dark-mode {
 	background: #1e1e1e;
 	}
+	  
+#about-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  padding: 1rem;
+}
 
- 
+#about-overlay.hidden {
+  display: none;
+}
+
+.about-modal {
+  background: rgb(255, 255, 255);
+  border: 1px solid var(--comment);
+  border-radius: 9px;
+  width: min(480px, 92vw);
+  max-height: 88vh;
+  overflow: auto;
+  padding: 1.2rem 1.4rem;
+}
+
+.about-modal h2 {
+  margin: 0 0 .6rem;
+  font-size: 1.05rem;
+  color: var(--purple);
+}
+
+.about-modal p {
+  font-size: .85rem;
+  line-height: 1.5;
+  color: var(--fg);
+  margin: 0 0 .8rem;
+}
+
+.about-modal a {
+  color: var(--cyan);
+}
+
+.about-modal code {
+  font-family: 'Fira Code', monospace;
+  background: var(--panel-bg);
+  padding: .05rem .3rem;
+  border-radius: 3px;
+}
 
   </style>
 </head>
@@ -235,9 +282,22 @@
 	  <button id="fontUpBtn" class="action">A+</button>
 	  <button id="fontDownBtn" class="action">A−</button>
 	  <button id="themeToggle" class="action">🌞</button>
+	  <button id="about-btn" class="secondary">&#8505;&#65039; About</button>
 	</span>
   </header>
 
+<div id="about-overlay" class="hidden">
+  <div class="about-modal">
+    <h2>About this page</h2>
+    <p>Everything here runs entirely in <strong>your own browser</strong>. Nothing you write or run is uploaded to or executed on a server.</p>
+    <p>Share links contain the HTML CSS etc for all pages inside the link itself. This allows wesbites to be shared without requiring server-side storage.</p>
+    <p>Please do not run code from a shared link unless you trust its source.</p>
+    <p>The HTML IDE was inspired by: <a href="https://github.com/milesberry/pyde" target="_blank" rel="noopener">Miles Berry's PyDE</a></p>
+    <p>Source doe and licence can be found at: <a href="https://github.com/snowdena/html-ide" target="_blank" rel="noopener">Mr Snowden's HTML IDE</a></p>
+    <button id="about-close">Got it</button>
+  </div>
+</div>
+	
   <main>
     <section class="left">
       <div class="pane-header">Editors</div>
@@ -899,6 +959,15 @@ document.getElementById('fontDownBtn').addEventListener('click', () => {
   applyEditorFontSize();
 });
 
+/* ---------- About ---------- */
+
+document.getElementById('about-btn').addEventListener('click', () => {
+  document.getElementById('about-overlay').classList.remove('hidden');
+});
+
+document.getElementById('about-close').addEventListener('click', () => {
+  document.getElementById('about-overlay').classList.add('hidden');
+});
 
     loadFromQuery();
   </script>

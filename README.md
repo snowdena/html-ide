@@ -36,6 +36,18 @@ Tabs in the edior pick up the text used in the navbar.
 
 There's nothing to install. Open "index.html" directly in a browser, or serve the folder with any static file server if you prefer.
 
+## Running it via IIS
+
+You will need to change the following settings to allow longer urls.
+
+IIS Manager
+→ Request Filtering
+→ Edit Feature Settings
+
+Maximum URL length:   32768
+Maximum query string: 32768
+
+
 ## License
 
 [MIT](LICENSE) — use it, modify it, teach with it, no strings attached.
